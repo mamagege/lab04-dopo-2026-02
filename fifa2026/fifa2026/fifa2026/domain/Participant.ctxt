@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.target=Participant
+comment1.params=name\ minutes\ position
+comment1.target=Participant(java.lang.String,\ java.lang.Integer,\ char)
+comment2.params=
+comment2.target=java.lang.String\ name()
+comment2.text=\r\n\ Return\ the\ name\r\n\ @return\r\n
+comment3.params=
+comment3.target=int\ minutes()
+comment3.text=\r\n\ Return\ the\ minutes\ played\r\n\ @return\r\n
+comment4.params=
+comment4.target=char\ position()
+comment4.text=\r\n\ Return\ the\ position\r\n\ @return\r\n
+comment5.params=
+comment5.target=int\ marketValue()
+comment5.text=\r\n\ Returns\ the\ Market\ Value\ of\ a\ player\ or\ the\ Weighted\ Market\ Value\ of\ a\ team\r\n\ @return\r\n\ @throws\ FifaException,\ if\ any\ marker\ value\ or\ minutes\ is\ unknown\r\n
+comment6.params=
+comment6.target=java.lang.String\ data()
+comment6.text=\r\n\ Return\ the\ representation\ as\ string\r\n\ @return\r\n\ @throws\ FifaException,\ if\ the\ data\ has\ problems\ (some\ unknown\ or\ erroneous\ data)\r\n
+numComments=7

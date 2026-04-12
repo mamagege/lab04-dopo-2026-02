@@ -1,0 +1,27 @@
+#BlueJ package file
+objectbench.height=200
+objectbench.width=1560
+package.divider.horizontal=0.6001275510204082
+package.divider.vertical=0.7202702702702702
+package.editor.height=526
+package.editor.width=1470
+package.editor.x=194
+package.editor.y=156
+package.frame.height=840
+package.frame.width=1600
+package.numDependencies=0
+package.numTargets=1
+package.showExtends=true
+package.showUses=true
+readme.height=60
+readme.name=@README
+readme.width=49
+readme.x=10
+readme.y=10
+target1.height=50
+target1.name=TeamTest
+target1.showInterface=false
+target1.type=UnitTestTargetJunit4
+target1.width=150
+target1.x=157
+target1.y=217

@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=TeamTest
+comment1.params=
+comment1.target=void\ shouldCalculateTheMarketValueOfATeam()
+comment2.params=
+comment2.target=void\ shouldThrowExceptionIfTeamHasNoPlayer()
+comment3.params=
+comment3.target=void\ shouldThrowExceptionIfPlayersMinutesSumZero()
+comment4.params=
+comment4.target=void\ shouldThrowExceptionIfAMarketValueIsNotKnown()
+comment5.params=
+comment5.target=void\ shouldThrowExceptionIfAMinutesIsNotKnown()
+numComments=6
