@@ -11,13 +11,16 @@ public class FifaTest {
     public void shouldAddAPlayerAndATeamInDomainLayer(){
         // Arrange
         Fifa fifa = new Fifa();
+        
+        int initialParticipants = fifa.numberParticipants();
+        
 
         // Act
         fifa.addPlayer("MESSI", "1420", "D", "15000000", "Inter");
         fifa.addTeam("ARGENTINA", "1620", "J", "Scaloni", "Azul-blanco", "MESSI");
 
         // Assert
-        assertEquals(8, fifa.numberParticipants());
+        assertEquals(initialParticipants + 2, fifa.numberParticipants());
     }
 
     @Test
@@ -62,5 +65,6 @@ public class FifaTest {
         // Assert
         assertTrue(listing.contains(">MESSI"));
         assertTrue(listing.contains(">ARGENTINA"));
+        assertTrue(listing.contains("8 elementos"));
     }
 }
