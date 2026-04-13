@@ -69,7 +69,10 @@ public class Fifa{
         Team c = new Team(name,Integer.parseInt(minutes),position.charAt(0),manager, uniform);
         String [] aPlayers= thePlayers.split("\n");
         for (String b : aPlayers){
-            c.addPlayer(players.get(b.toUpperCase()));
+            Player found = players.get(b.toUpperCase());
+            if (found != null){
+                c.addPlayer(found);
+            }
         }
         participants.add(c);
     }
@@ -82,7 +85,7 @@ public class Fifa{
     public ArrayList<Participant> select(String prefix){
         ArrayList <Participant> answers=new ArrayList<Participant>();
         prefix=prefix.toUpperCase();
-        for(int i=0;i<=participants.size();i++){
+        for(int i=0;i<participants.size();i++){
             if(participants.get(i).name().toUpperCase().startsWith(prefix)){
                 answers.add(participants.get(i));
             }   

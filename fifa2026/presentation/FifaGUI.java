@@ -235,10 +235,10 @@ public class FifaGUI extends JFrame{
     }
     
     private void  actionAdd(){
-        if (players.getText().trim().equals("")){
-            fifa.addPlayer(name.getText(),position.getText(),minutes.getText(),managerClub.getText(),value.getText());
+         if (players.getText().trim().equals("")){
+            fifa.addPlayer(name.getText(),minutes.getText(),position.getText(),value.getText(),managerClub.getText());
         }else{ 
-            fifa.addTeam(name.getText(),position.getText(), minutes.getText(), managerClub.getText(),uniform.getText(),players.getText());
+             fifa.addTeam(name.getText(),minutes.getText(), position.getText(), managerClub.getText(),uniform.getText(),players.getText());
         }
     }
 
