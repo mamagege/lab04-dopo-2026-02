@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"domain","l":"Fifa"},{"p":"domain","l":"FifaException"},{"p":"presentation","l":"FifaGUI"},{"p":"domain","l":"Log"},{"p":"domain","l":"Participant"},{"p":"domain","l":"Player"},{"p":"domain","l":"Team"},{"p":"test","l":"TeamTest"}];updateSearchResults();
