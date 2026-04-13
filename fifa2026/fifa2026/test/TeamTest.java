@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class TeamTest{
    
- 
+     //Tests para el metodo marketValue() de Team.
     @Test
     public void shouldCalculateTheMarketValueOfATeam(){                              
         Team t = new Team("COLOMBIA",1620, 'K', "Lorenzo", "Amarill-Rojo-Azul");
@@ -89,4 +89,83 @@ public class TeamTest{
         }    
     }  
     
+    //Tests para métodos ExpectedValue() y DefaultValue() de Team.
+    @Test
+    public void shouldCalculateExpectedMarketValueWhenAllMinutesAreKnown(){
+        // Arrange
+        Team t = new Team("TEAM-A", 0, 'A', "Coach", "White");
+        t.addPlayer(new Player("P1", 30, 'A', 100, "Club1"));
+        t.addPlayer(new Player("P2", 30, 'M', 200, "Club2"));
+
+        // Act & Assert
+        try {
+            assertEquals(150, t.expectedMarketValue());
+        } catch (FifaException e){
+            fail("Threw an exception");
+        }
+    }
+
+    @Test
+    public void shouldEstimateUnknownMinutesForExpectedMarketValue(){
+        // Arrange
+        Team t = new Team("TEAM-B", 0, 'B', "Coach", "Blue");
+        t.addPlayer(new Player("P1", 60, 'A', 100, "Club1"));
+        t.addPlayer(new Player("P2", 30, 'M', 200, "Club2"));
+        t.addPlayer(new Player("P3", null, 'D', 300, "Club3"));
+
+        // Act & Assert
+        try {
+            assertEquals(188, t.expectedMarketValue());
+        } catch (FifaException e){
+            fail("Threw an exception");
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionInExpectedMarketValueWhenMarketValueIsUnknown(){
+        // Arrange
+        Team t = new Team("TEAM-C", 0, 'C', "Coach", "Red");
+        t.addPlayer(new Player("P1", 40, 'A', 100, "Club1"));
+        t.addPlayer(new Player("P2", null, 'M', null, "Club2"));
+
+        // Act & Assert
+        try {
+            t.expectedMarketValue();
+            fail("Did not throw exception");
+        } catch (FifaException e){
+            assertEquals(FifaException.VALUE_UNKNOWN, e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldCalculateDefaultMarkedValueUsingDefaults(){
+        // Arrange
+        Team t = new Team("TEAM-D", 0, 'D', "Coach", "Green");
+        t.addPlayer(new Player("P1", 50, 'A', 100, "Club1"));
+        t.addPlayer(new Player("P2", null, 'M', null, "Club2"));
+
+        // Act & Assert
+        try {
+            assertEquals(150, t.defaultMarkedValue(200, 50));
+        } catch (FifaException e){
+            fail("Threw an exception");
+        }
+    }
+
+    @Test
+    public void shouldThrowImpossibleInDefaultMarkedValueWhenTotalMinutesIsZero(){
+        // Arrange
+        Team t = new Team("TEAM-E", 0, 'E', "Coach", "Black");
+        t.addPlayer(new Player("P1", null, 'A', 100, "Club1"));
+
+        // Act & Assert
+        try {
+            t.defaultMarkedValue(500, 0);
+            fail("Did not throw exception");
+        } catch (FifaException e){
+            assertEquals(FifaException.IMPOSSIBLE, e.getMessage());
+        }
+    }
+
 }
+
