@@ -1,6 +1,6 @@
 package domain;
 
-
+import java.lang.*;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -30,14 +30,23 @@ public class Fifa{
                               {"LUCUMI", "1250","D","125000000","Bologna"},
                               {"VARGAS", "1160","P","540000","Atlas"}};
         for (String [] p: players){
-            addPlayer(p[0],p[1],p[2],p[3],p[4]);
+            try {
+                addPlayer(p[0],p[1],p[2],p[3],p[4]);
+            } catch (FifaException e) {
+                Log.record(e);
+            }
         }
         
         String [][] teams = {{"COLOMBIA","1620", "K", "Lorenzo", "Amarill-Rojo-Azul", "L.DIAZ\nJAMES\nBORRE\nLUCUMI\nVARGAS"}};
         for (String [] t: teams){
-            addTeam(t[0],t[1],t[2],t[3],t[4],t[5]);
+            try {
+                addTeam(t[0],t[1],t[2],t[3],t[4],t[5]);
+            } catch (FifaException e) {
+                Log.record(e);
         }
     }
+    
+    }   
 
 
     /**
@@ -56,8 +65,21 @@ public class Fifa{
     /**
      * Add a new player
     */
-    public void addPlayer(String name, String minutes, String position, String value, String club){ 
-        Player np=new Player(name,Integer.parseInt(minutes),position.charAt(0),Integer.parseInt(value),club);
+    public void addPlayer(String name, String minutes, String position, String value, String club) throws FifaException{ 
+        validateName(name);
+
+        int parsedMinutes = parseNumber(minutes);
+        int parsedValue = parseNumber(value);
+
+        if (position == null || position.length() != 1 || "PDMA".indexOf(Character.toUpperCase(position.charAt(0))) < 0) {
+            throw new FifaException(FifaException.INVALID_POSITION);
+        }
+
+        if (club == null || club.trim().equals("")) {
+            throw new FifaException(FifaException.INVALID_DATA);
+        }
+
+        Player np=new Player(name,parsedMinutes,Character.toUpperCase(position.charAt(0)),parsedValue,club);
         participants.add(np);
         players.put(name.toUpperCase(),np); 
     }
@@ -65,17 +87,73 @@ public class Fifa{
     /**
      * Add a new team
     */
-    public void addTeam(String name, String minutes, String position, String manager, String uniform, String thePlayers){ 
-        Team c = new Team(name,Integer.parseInt(minutes),position.charAt(0),manager, uniform);
-        String [] aPlayers= thePlayers.split("\n");
-        for (String b : aPlayers){
-            Player found = players.get(b.toUpperCase());
-            if (found != null){
-                c.addPlayer(found);
-            }
+     public void addTeam(String name, String minutes, String position, String manager, String uniform, String thePlayers) throws 
+     FifaException{ 
+        validateName(name);
+
+        int parsedMinutes = parseNumber(minutes);
+
+        if (position == null || position.length() != 1) {
+            throw new FifaException(FifaException.INVALID_POSITION);
         }
+
+        char group = Character.toUpperCase(position.charAt(0));
+        if (group < 'A' || group > 'L') {
+            throw new FifaException(FifaException.INVALID_POSITION);
+        }
+
+        if (manager == null || manager.trim().equals("") || uniform == null || uniform.trim().equals("")) {
+            throw new FifaException(FifaException.INVALID_DATA);
+        }
+
+        Team c = new Team(name,parsedMinutes,group,manager, uniform);
+        if (thePlayers == null || thePlayers.trim().equals("")) {
+            throw new FifaException(FifaException.INVALID_DATA);
+        }
+
+        String [] aPlayers= thePlayers.split("\n");
+        int added = 0;
+        for (String b : aPlayers){
+            Player found = players.get(b.trim().toUpperCase());
+            if (found == null){
+                throw new FifaException(FifaException.PLAYER_NOT_FOUND);
+            }
+            c.addPlayer(found);
+            added++;
+        }
+
+        if (added == 0){
+            throw new FifaException(FifaException.INVALID_DATA);
+        }
+
         participants.add(c);
+    
+    
     }
+    
+     private void validateName(String name) throws FifaException{
+        if (name == null || name.trim().equals("")) {
+            throw new FifaException(FifaException.INVALID_DATA);
+        }
+        if (consult(name) != null) {
+            throw new FifaException(FifaException.DUPLICATE_NAME);
+        }
+    }
+
+    private int parseNumber(String numericValue) throws FifaException{
+        try {
+            int value = Integer.parseInt(numericValue);
+            if (value < 0) {
+                throw new FifaException(FifaException.INVALID_NUMBER);
+            }
+            return value;
+        } catch (NumberFormatException e) {
+            throw new FifaException(FifaException.INVALID_NUMBER);
+        }
+    }
+    
+    
+    
 
     /**
      * Consults the participants that start with a prefix
