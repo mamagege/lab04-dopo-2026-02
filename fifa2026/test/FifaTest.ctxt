@@ -16,4 +16,6 @@ comment7.params=
 comment7.target=void\ shouldSearchByPrefixWithoutIndexErrorsAndReturnMatches()
 comment8.params=
 comment8.target=void\ AcceptanceTestAddList()
-numComments=9
+comment9.params=
+comment9.target=void\ shouldAddPlayerWhenNumericInputsContainLeadingOrTrailingSpaces()
+numComments=10

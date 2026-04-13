@@ -141,6 +141,22 @@ public class FifaTest {
         assertTrue(listing.contains(">ARGENTINA"));
     }
     
-    
+    @Test
+    public void shouldAddPlayerWhenNumericInputsContainLeadingOrTrailingSpaces(){
+        // Arrange
+        Fifa fifa = new Fifa();
+        int initialParticipants = fifa.numberParticipants();
+
+        // Act
+        try {
+            fifa.addPlayer("MESSI-SPACE", " 1900 ", "D", " 1909209 ", " Inter ");
+        } catch (FifaException e) {
+            fail("Threw an exception");
+        }
+
+        // Assert
+        assertEquals(initialParticipants + 1, fifa.numberParticipants());
+        assertTrue(fifa.toString().contains(">MESSI-SPACE"));
+    }
 
 }

@@ -68,6 +68,7 @@ public class Fifa{
      * Add a new player
     */
     public void addPlayer(String name, String minutes, String position, String value, String club) throws FifaException{ 
+        name = name == null ? null : name.trim();
         validateName(name);
 
         int parsedMinutes = parseNumber(minutes);
@@ -77,7 +78,8 @@ public class Fifa{
             throw new FifaException(FifaException.INVALID_POSITION);
         }
 
-        if (club == null || club.trim().equals("")) {
+        club = club == null ? null : club.trim();
+        if (club == null || club.equals("")) {
             throw new FifaException(FifaException.INVALID_DATA);
         }
 
@@ -91,6 +93,8 @@ public class Fifa{
     */
      public void addTeam(String name, String minutes, String position, String manager, String uniform, String thePlayers) throws 
      FifaException{ 
+        name = name == null ? null : name.trim();
+         
         validateName(name);
 
         int parsedMinutes = parseNumber(minutes);
@@ -104,7 +108,9 @@ public class Fifa{
             throw new FifaException(FifaException.INVALID_POSITION);
         }
 
-        if (manager == null || manager.trim().equals("") || uniform == null || uniform.trim().equals("")) {
+        manager = manager == null ? null : manager.trim();
+        uniform = uniform == null ? null : uniform.trim();
+        if (manager == null || manager.equals("") || uniform == null || uniform.equals("")) {
             throw new FifaException(FifaException.INVALID_DATA);
         }
 
@@ -113,7 +119,7 @@ public class Fifa{
             throw new FifaException(FifaException.INVALID_DATA);
         }
 
-        String [] aPlayers= thePlayers.split("\n");
+         String [] aPlayers= thePlayers.trim().split("\n");
         int added = 0;
         for (String b : aPlayers){
             Player found = players.get(b.trim().toUpperCase());
@@ -143,8 +149,16 @@ public class Fifa{
     }
 
     private int parseNumber(String numericValue) throws FifaException{
+        if (numericValue == null) {
+            throw new FifaException(FifaException.INVALID_NUMBER);
+        }
+        String cleaned = numericValue.trim();
+        if (cleaned.equals("")) {
+            throw new FifaException(FifaException.INVALID_NUMBER);
+        }
+        
         try {
-            int value = Integer.parseInt(numericValue);
+            int value = Integer.parseInt(cleaned);
             if (value < 0) {
                 throw new FifaException(FifaException.INVALID_NUMBER);
             }
