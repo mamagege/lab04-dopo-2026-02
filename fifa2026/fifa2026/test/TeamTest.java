@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class TeamTest{
    
-     //Tests para el metodo marketValue() de Team.
+     //Tests para marketValue()
     @Test
     public void shouldCalculateTheMarketValueOfATeam(){                              
         Team t = new Team("COLOMBIA",1620, 'K', "Lorenzo", "Amarill-Rojo-Azul");
@@ -89,7 +89,7 @@ public class TeamTest{
         }    
     }  
     
-    //Tests para métodos ExpectedValue() y DefaultValue() de Team.
+    //Tests para métodos ExpectedValue() y DefaultValue()
     @Test
     public void shouldCalculateExpectedMarketValueWhenAllMinutesAreKnown(){
         // Arrange
@@ -166,6 +166,56 @@ public class TeamTest{
             assertEquals(FifaException.IMPOSSIBLE, e.getMessage());
         }
     }
+    
+    //Tests para bestMarkedValue()
+    @Test
+    public void shouldCalculateBestMarkedValueAddingBonusForPrimeAgePlayers(){
+        // Arrange
+        Team t = new Team("TEAM-F", 0, 'F', "Coach", "White");
+        t.addPlayer(new Player("P1", 50, 'A', 100, "Club1", 18));
+        t.addPlayer(new Player("P2", 50, 'M', 100, "Club2", 31));
+
+        // Act & Assert
+        try {
+            assertEquals(110, t.bestMarkedValue());
+        } catch (FifaException e){
+            fail("Threw an exception");
+        }
+    }
+
+    @Test
+    public void shouldCalculateBestMarkedValueAddingBonusAtUpperBoundaryAge(){
+        // Arrange
+        Team t = new Team("TEAM-G", 0, 'G', "Coach", "Blue");
+        t.addPlayer(new Player("P1", 50, 'A', 100, "Club1", 30));
+        t.addPlayer(new Player("P2", 50, 'M', 100, "Club2", 40));
+
+        // Act & Assert
+        try {
+            assertEquals(110, t.bestMarkedValue());
+        } catch (FifaException e){
+            fail("Threw an exception");
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionInBestMarkedValueWhenMarketValueIsUnknown(){
+        // Arrange
+        Team t = new Team("TEAM-H", 0, 'H', "Coach", "Red");
+        t.addPlayer(new Player("P1", 40, 'A', 100, "Club1", 20));
+        t.addPlayer(new Player("P2", 40, 'M', null, "Club2", 25));
+
+        // Act & Assert
+        try {
+            t.bestMarkedValue();
+            fail("Did not throw exception");
+        } catch (FifaException e){
+            assertEquals(FifaException.VALUE_UNKNOWN, e.getMessage());
+        }
+    }
 
 }
+
+
+
 

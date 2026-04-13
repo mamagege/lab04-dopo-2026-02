@@ -33,6 +33,7 @@ public class Team extends Participant{
      /**
      * Calculates the marketValue of a team
      */ 
+    
     public int marketValue() throws FifaException{ 
         if (players == null) {throw new FifaException(FifaException.IMPOSSIBLE);}
         
@@ -57,12 +58,23 @@ public class Team extends Participant{
     
 
    /**
-     * Returns the expectet Market Value 
-     * @return
-     * @throws FifaException, if any marker value or minutes is unknown
+     * * Returns the expected market value of the team using estimated minutes for
+     * players with unknown minutes.
+     * 
+     * If more than half of the players have unknown minutes, estimate each
+     * unknown value with knownMinutesSum / totalPlayers
+     * 
+     * Otherwise, estimate each unknown value with
+     *       knownMinutesSum / knownPlayers
+     * 
+     * Market values are never replaced; if any player's market value is unknown,
+     * the method throws FifaException.VALUE_UNKNOWN
+     *
+     * @return the weighted expected market value
+     * @throws FifaException if there are no players, if the total minutes is zero,
+     *         or if a player's market value is unknown
      */
-    //If more than half of the players have no recorded minutes, the total number of players is used to average. 
-    //Otherwise, the average minutes played by known players is used for those whose minutes are unknown.
+   
     
     public int expectedMarketValue() throws FifaException{
         if (players == null || players.isEmpty()) {
@@ -118,11 +130,18 @@ public class Team extends Participant{
     
     
     /**
-     * Returns the Marked Value using default values 
-     * @return
-     * @throws FifaException, if the resistance cannot be calculate
+     * Returns the market value of the team using default values for unknown data.
+     * 
+     * If a player has unknown market value, defaultMarketValueis used.
+     * If a player has unknown minutes, defaultMinutesis used.
+     *
+     * @param defaultMarketValue replacement value for unknown market value
+     * @param defaultMinutes replacement value for unknown minutes
+     * @return the weighted market value with defaults
+     * @throws FifaException if there are no players or if the computed total
+     *         minutes is zero
      */
-    //If a player's market value or minutes played are unknown, default values ​​are used.
+
     public int defaultMarkedValue(int defaultMarketValue, int defaultMinutes) throws FifaException{
         if (players == null || players.isEmpty()) {
             throw new FifaException(FifaException.IMPOSSIBLE);
@@ -168,6 +187,47 @@ public class Team extends Participant{
             }
 
             totalValue += playerValue * ((double) playerMinutes / totalMinutes);
+        }
+
+        return (int) totalValue;
+    }
+    
+    /**
+     * Returns the "best" market value of the team by rewarding players in their
+     * prime age range (18 to 30 years inclusive).
+     * 
+     * The method calculates a weighted market value by minutes played, similar to
+     * marketValue(), but each eligible player receives a fixed bonus of
+     * 20 points over their individual market value before weighting.
+     *
+     * @return weighted team value with prime-age bonus
+     * @throws FifaException if team value cannot be calculated due to missing
+     *         minutes/market value or when total minutes are zero
+     */
+    public int bestMarkedValue() throws FifaException{
+        if (players == null || players.isEmpty()) {
+            throw new FifaException(FifaException.IMPOSSIBLE);
+        }
+
+        int totalMinutes = 0;
+        for (Player p : players) {
+            totalMinutes += p.minutes();
+        }
+
+        if (totalMinutes == 0) {
+            throw new FifaException(FifaException.IMPOSSIBLE);
+        }
+
+        double totalValue = 0;
+        for (Player p : players) {
+            int playerValue = p.marketValue();
+            Integer playerAge = p.age();
+
+            if (playerAge != null && playerAge >= 18 && playerAge <= 30) {
+                playerValue += 20;
+            }
+
+            totalValue += playerValue * ((double) p.minutes() / totalMinutes);
         }
 
         return (int) totalValue;
