@@ -197,7 +197,14 @@ public class FifaGUI extends JFrame{
         /*Add*/
         buttonAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev){
-                actionAdd();                    
+                try
+                {
+                    actionAdd();
+                }
+                catch (FifaException fe)
+                {
+                    fe.printStackTrace();
+                }                    
             }
         });
         
@@ -234,9 +241,9 @@ public class FifaGUI extends JFrame{
         textDetails.setText(fifa.toString());
     }
     
-    private void  actionAdd(){
+    private void  actionAdd() throws FifaException {
          if (players.getText().trim().equals("")){
-            fifa.addPlayer(name.getText(),minutes.getText(),position.getText(),value.getText(),managerClub.getText());
+            fifa.addPlayer(name.getText(),position.getText(),minutes.getText(),managerClub.getText(),value.getText());
         }else{ 
              fifa.addTeam(name.getText(),minutes.getText(), position.getText(), managerClub.getText(),uniform.getText(),players.getText());
         }

@@ -122,5 +122,25 @@ public class FifaTest {
         
     }
     
+     @Test
+    public void AcceptanceTestAddList(){
+        // Arrange
+        Fifa fifa = new Fifa();
+
+        // Act
+        try {
+            fifa.addPlayer("MESSI", "1420", "D", "15000000", "Inter");
+            fifa.addTeam("ARGENTINA", "1620", "J", "Scaloni", "Azul-blanco", "MESSI");
+        } catch (FifaException e) {
+            fail("Threw an exception");
+        }
+        String listing = fifa.toString();
+
+        // Assert
+        assertTrue(listing.contains(">MESSI"));
+        assertTrue(listing.contains(">ARGENTINA"));
+    }
+    
+    
 
 }

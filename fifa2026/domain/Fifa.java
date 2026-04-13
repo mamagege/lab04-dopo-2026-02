@@ -24,12 +24,12 @@ public class Fifa{
     }
 
     private void addSome(){
-        String [][] players= {{"L.DIAZ", "690","A","760000000","Bayer"},
+    String [][] players= {{"L.DIAZ", "690","A","760000000","Bayer"},
                               {"JAMES", "516","M","2200000","Minnesota"},
                               {"BORRE", "445","A","4400000","Sport Club"},
                               {"LUCUMI", "1250","D","125000000","Bologna"},
                               {"VARGAS", "1160","P","540000","Atlas"}};
-        for (String [] p: players){
+    for (String [] p: players){
             try {
                 addPlayer(p[0],p[1],p[2],p[3],p[4]);
             } catch (FifaException e) {
@@ -37,16 +37,18 @@ public class Fifa{
             }
         }
         
-        String [][] teams = {{"COLOMBIA","1620", "K", "Lorenzo", "Amarill-Rojo-Azul", "L.DIAZ\nJAMES\nBORRE\nLUCUMI\nVARGAS"}};
+    String [][] teams = {{"COLOMBIA","1620", "K", "Lorenzo", "Amarill-Rojo-Azul", "L.DIAZ\nJAMES\nBORRE\nLUCUMI\nVARGAS"}};
         for (String [] t: teams){
             try {
                 addTeam(t[0],t[1],t[2],t[3],t[4],t[5]);
             } catch (FifaException e) {
                 Log.record(e);
         }
-    }
+    
     
     }   
+    
+    }
 
 
     /**
