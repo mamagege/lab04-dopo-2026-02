@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.target=Player
+comment1.params=name\ minutes\ position\ value\ club
+comment1.target=Player(java.lang.String,\ java.lang.Integer,\ char,\ java.lang.Integer,\ java.lang.String)
+comment2.params=name\ minutes\ position\ value\ club\ age
+comment2.target=Player(java.lang.String,\ java.lang.Integer,\ char,\ java.lang.Integer,\ java.lang.String,\ int)
+comment3.params=
+comment3.target=java.lang.Integer\ age()
+comment3.text=\r\n\ Returns\ player's\ age.\r\n\ @return\ age\ or\ {@code\ null}\ when\ unknown\r\n
+comment4.params=
+comment4.target=int\ marketValue()
+comment5.params=
+comment5.target=java.lang.String\ data()
+numComments=6

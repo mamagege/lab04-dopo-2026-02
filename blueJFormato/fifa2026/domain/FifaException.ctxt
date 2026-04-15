@@ -1,0 +1,6 @@
+#BlueJ class context
+comment0.target=FifaException
+comment0.text=\r\n\ Clase\ de\ excepciones\ para\ Fifa\r\n\r\n\ @author\ Juan\ Diego\ Gaitan,\ David\ Lasso\r\n\ @version\ 1.0\r\n
+comment1.params=message
+comment1.target=FifaException(java.lang.String)
+numComments=2
