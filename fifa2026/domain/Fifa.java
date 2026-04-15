@@ -1,6 +1,6 @@
 package domain;
 
-import java.lang.*;
+
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -196,7 +196,7 @@ public class Fifa{
      */
     public String data(ArrayList<Participant> selected){
         StringBuffer answer=new StringBuffer();
-        answer.append(participants.size()+ " elementos\n");
+        answer.append(selected.size()+ " elementos\n");
         for(Participant p : selected) {
             try{
                 answer.append('>' + p.data());

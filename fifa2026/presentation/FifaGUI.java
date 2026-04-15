@@ -1,12 +1,12 @@
-package presentation; 
- 
-import domain.*;
+package presentation;
 
+
+import domain.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import java.util.*;
+
 
 /**
  * @version ECI 2025
@@ -38,10 +38,12 @@ public class FifaGUI extends JFrame{
     /*Search*/
     private JTextField textSearch;
     private JTextArea textResults;
+    private String lastSearchWarningPrefix;
     
     
     private FifaGUI(){
-        fifa=new Fifa();
+        fifa= new Fifa();
+        configureGlobalUnexpectedErrorHandler();
         prepareElements();
         prepareActions();
     }
@@ -58,6 +60,7 @@ public class FifaGUI extends JFrame{
         players = new JTextArea(10, 50);
         players.setLineWrap(true);
         players.setWrapStyleWord(true);
+        lastSearchWarningPrefix = "";
         
         JTabbedPane etiquetas = new JTabbedPane();
         etiquetas.add("Listar",   prepareAreaList());
@@ -184,7 +187,11 @@ public class FifaGUI extends JFrame{
         /*List*/
         buttonList.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent ev){
-                actionList();
+                try{
+                    actionList();
+                }catch(Throwable t){
+                    handleUnexpectedError("Unexpected error listing participants", t);
+                }
             }
         });
 
@@ -197,14 +204,13 @@ public class FifaGUI extends JFrame{
         /*Add*/
         buttonAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev){
-                try
-                {
+                try{
                     actionAdd();
+                } catch (FifaException fe){
+                    showBusinessWarning(fe.getMessage());
+                } catch (Throwable t){
+                    handleUnexpectedError("Unexpected error adding participant", t);
                 }
-                catch (FifaException fe)
-                {
-                    fe.printStackTrace();
-                }                    
             }
         });
         
@@ -223,15 +229,15 @@ public class FifaGUI extends JFrame{
         /*Search*/
         textSearch.getDocument().addDocumentListener(new DocumentListener(){
             public void changedUpdate(DocumentEvent ev){
-                actionSearch();
+                safeSearch();
             }
            
             public void insertUpdate(DocumentEvent ev){
-                actionSearch();
+                safeSearch();
             }
             
             public void removeUpdate(DocumentEvent ev){
-                actionSearch();
+                safeSearch();
             }
         });
     }    
@@ -250,13 +256,68 @@ public class FifaGUI extends JFrame{
     }
 
     private void actionSearch(){
-        String patronBusqueda=textSearch.getText();
+        String patronBusqueda=textSearch.getText().trim();
         String answer = "";
         if(patronBusqueda.length() > 0) {
-            answer = fifa.search(patronBusqueda);
+            java.util.ArrayList<Participant> selected = fifa.select(patronBusqueda);
+            answer = fifa.data(selected);
+            if (selected.isEmpty()) {
+                if (!patronBusqueda.equalsIgnoreCase(lastSearchWarningPrefix)) {
+                    FifaException noResults = new FifaException(
+                        FifaException.NO_RESULTS + " (" + patronBusqueda.toUpperCase() + ")"
+                    );
+                    Log.record(noResults);
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "No se encontraron equipos/participantes que inicien con: " + patronBusqueda.toUpperCase(),
+                        "Alerta de busqueda",
+                        JOptionPane.WARNING_MESSAGE
+                    );
+                }
+                lastSearchWarningPrefix = patronBusqueda.toUpperCase();
+            } else {
+                lastSearchWarningPrefix = "";
+            }
+        } else {
+            lastSearchWarningPrefix = "";
         }
         textResults.setText(answer);
-    } 
+    }
+    
+    private void safeSearch(){
+        try{
+            actionSearch();
+        } catch (Throwable t){
+            handleUnexpectedError("Unexpected error searching participants", t);
+        }
+    }
+    
+    private void showBusinessWarning(String message){
+        JOptionPane.showMessageDialog(
+            this,
+            message,
+            "Validacion",
+            JOptionPane.WARNING_MESSAGE
+        );
+    }
+    
+    private void handleUnexpectedError(String context, Throwable t){
+        Log.record(context, t);
+        JOptionPane.showMessageDialog(
+            this,
+            "Ocurrio un error inesperado. La aplicacion continuara en ejecucion.",
+            "Error inesperado",
+            JOptionPane.ERROR_MESSAGE
+        );
+    }
+    
+    private void configureGlobalUnexpectedErrorHandler(){
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler(){
+            public void uncaughtException(Thread thread, Throwable throwable){
+                Log.record("Uncaught error in thread: " + thread.getName(), throwable);
+            }
+        });
+    }
     
    public static void main(String args[]){
        FifaGUI gui=new FifaGUI();

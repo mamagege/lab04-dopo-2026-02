@@ -1,6 +1,4 @@
 package domain;
-
-
 /**
  * Clase de excepciones para Fifa
  *
@@ -18,6 +16,7 @@ public class FifaException extends Exception
     public static final String INVALID_POSITION = "Position is invalid";
     public static final String INVALID_DATA = "Data is invalid";
     public static final String PLAYER_NOT_FOUND = "Player not found";
+    public static final String NO_RESULTS = "No participants found for the requested prefix";
     
     
     public FifaException(String message)

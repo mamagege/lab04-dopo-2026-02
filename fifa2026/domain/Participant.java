@@ -1,6 +1,6 @@
 package domain;
 
-
+      
 
 public abstract class Participant{
     protected String name;

@@ -1,13 +1,19 @@
 package test;
+import domain.*;
 
-import domain.Fifa;
-import org.junit.Test;
-import domain.FifaException;
 
 import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class FifaTest {
 
+    /**
+     * Test de Adicionar en Dominio
+     * */
+
+    //Test para adicionar un jugador y un equipo correctamente.
     @Test
     public void shouldAddAPlayerAndATeamInDomainLayer() {
         // Arrange
@@ -27,6 +33,7 @@ public class FifaTest {
         assertEquals(initialParticipants + 2, fifa.numberParticipants());
     }
 
+    //Test para adicionar un jugador con un nombre ya existente.
     @Test
     public void shouldRejectAddWhenNameAlreadyExists() throws FifaException{
         // Arrange
@@ -40,6 +47,7 @@ public class FifaTest {
         }
     }
     
+    //Test para adicionar un jugador con valores numéricos no numéricos.
      @Test
     public void shouldRejectAddPlayerWhenNumericValuesAreNotNumbers(){
         // Arrange
@@ -54,6 +62,7 @@ public class FifaTest {
         }
     }
     
+    //Test para adicionar un jugador con una posición no válida.
     @Test
         public void shouldRejectAddWhenValuesAreNotExpected(){
         // Arrange
@@ -68,6 +77,8 @@ public class FifaTest {
 
     }
     
+
+    //Test para adicionar cuando un jugador no existe al adicionar un equipo.
          @Test
         public void shouldRejectTeamWhenReferencedPlayerDoesNotExist(){
         // Arrange
@@ -83,6 +94,7 @@ public class FifaTest {
         
     }
 
+    //Test que verifica el numero de participantes.
     @Test
         public void shouldListParticipantsIncludingRecentlyAddedEntities(){
         // Arrange
@@ -101,9 +113,9 @@ public class FifaTest {
         assertTrue(listing.contains(">ARGENTINA"));
  
     }
-    
+    //Test que verifica la búsqueda por prefijo.
     @Test
-    public void shouldSearchByPrefixWithoutIndexErrorsAndReturnMatches(){
+    public void shouldSearchByPrefix(){
         // Arrange
         Fifa fifa = new Fifa();
         try {
@@ -122,8 +134,14 @@ public class FifaTest {
         
     }
     
-     @Test
-    public void AcceptanceTestAddList(){
+
+
+    /**Acceptance para List y Add en Dominio */
+
+
+
+    @Test
+    public void AcceptanceTestListAndAdd() {
         // Arrange
         Fifa fifa = new Fifa();
 
@@ -141,22 +159,68 @@ public class FifaTest {
         assertTrue(listing.contains(">ARGENTINA"));
     }
     
+    
+
+    /**
+     * Acceptance cases para adicionar en dominio:
+     * 1) nombres duplicados
+     * 2) valores no numéricos;
+     * 3) posicion inválida;
+     * 4) numero negativos:
+     */
+
     @Test
-    public void shouldAddPlayerWhenNumericInputsContainLeadingOrTrailingSpaces(){
+    public void AcceptanceCaseTestAdd() {
+        // Arrange
+        Fifa fifa = new Fifa();
+
+        // Act
+        String duplicateNameError = tryAddPlayerAndGetError(fifa, "JAMES", "100", "M", "1000000", "ClubX");
+        String nonNumericError = tryAddPlayerAndGetError(fifa, "NEW-10", "N/A", "D", "FIFTEEN", "Inter");
+        String unexpectedValueError = tryAddPlayerAndGetError(fifa, "NEW-11", "300", "X", "1000", "Inter");
+        String negativeValuesError = tryAddPlayerAndGetError(fifa, "NEG-01", "-10", "D", "-500", "Inter");
+
+        // Assert
+        assertEquals(FifaException.DUPLICATE_NAME, duplicateNameError);
+        assertEquals(FifaException.INVALID_NUMBER, nonNumericError);
+        assertEquals(FifaException.INVALID_POSITION, unexpectedValueError);
+        assertEquals(FifaException.INVALID_NUMBER, negativeValuesError);
+    }
+
+    /**
+     * Acceptance cases para List.
+     */
+    @Test
+    public void AcceptanceCaseTestList() {
         // Arrange
         Fifa fifa = new Fifa();
         int initialParticipants = fifa.numberParticipants();
+        String initialListing = fifa.toString();
 
         // Act
-        try {
-            fifa.addPlayer("MESSI-SPACE", " 1900 ", "D", " 1909209 ", " Inter ");
-        } catch (FifaException e) {
-            fail("Threw an exception");
-        }
+        tryAddPlayerAndGetError(fifa, "JAMES", "100", "M", "1000000", "ClubX");
+        tryAddPlayerAndGetError(fifa, "NEW-20", "N/A", "D", "FIFTEEN", "Inter");
+        tryAddPlayerAndGetError(fifa, "NEW-21", "300", "X", "1000", "Inter");
+        tryAddPlayerAndGetError(fifa, "NEG-02", "-5", "D", "-1", "Inter");
+        String listingAfterFailedAdds = fifa.toString();
 
         // Assert
-        assertEquals(initialParticipants + 1, fifa.numberParticipants());
-        assertTrue(fifa.toString().contains(">MESSI-SPACE"));
+        assertEquals(initialParticipants, fifa.numberParticipants());
+        assertFalse(listingAfterFailedAdds.contains(">NEW-20"));
+        assertFalse(listingAfterFailedAdds.contains(">NEW-21"));
+        assertFalse(listingAfterFailedAdds.contains(">NEG-02"));
+        assertTrue(listingAfterFailedAdds.contains(">JAMES"));
+        assertEquals(initialListing, listingAfterFailedAdds);
+    }
+
+    private String tryAddPlayerAndGetError(Fifa fifa, String name, String minutes, String position, String value, String club) {
+        try {
+            fifa.addPlayer(name, minutes, position, value, club);
+            fail("Did not throw exception");
+            return null;
+        } catch (FifaException e) {
+            return e.getMessage();
+        }
     }
 
 }
